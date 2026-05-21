@@ -190,6 +190,11 @@ class SocketService {
     this.socket.on('online_users', callback);
   }
 
+  onConnect(callback: () => void) {
+    if (!this.socket) throw new Error('Socket not connected');
+    this.socket.on('connect', callback);
+  }
+
   addReaction(messageId: string, emoji: string) {
     if (!this.socket) throw new Error('Socket not connected');
     this.socket.emit('add_reaction', { messageId, emoji });

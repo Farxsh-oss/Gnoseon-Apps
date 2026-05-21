@@ -30,6 +30,18 @@ export const useSocketHandlers = () => {
   const setupSocketListeners = useCallback(() => {
     if (!user) return;
 
+    // Remove all existing listeners first to avoid duplicates on reconnect
+    socketService.off('online_users');
+    socketService.off('chats_updated');
+    socketService.off('groups_updated');
+    socketService.off('new_message');
+    socketService.off('new_group_message');
+    socketService.off('user_typing');
+    socketService.off('user_status_changed');
+    socketService.off('messages_loaded');
+    socketService.off('group_messages_loaded');
+    socketService.off('reaction_updated');
+
     // Listen for online users
     socketService.onOnlineUsers((users) => {
       const filteredUsers = users.filter((u: any) => u.id !== user.id);
@@ -48,14 +60,20 @@ export const useSocketHandlers = () => {
     // Listen for chats updates
     socketService.onChatsUpdated((updatedChats) => {
       const state = useChatStore.getState();
-      // If a temp chat is selected, remap to the real chat after server update
       if (state.selectedChatId?.startsWith('temp-')) {
         const tempChat = state.chats.find((c: any) => c.id === state.selectedChatId);
         if (tempChat) {
           const realChat = updatedChats.find((c: any) => c.contactId === tempChat.contactId);
           if (realChat) {
+            // Found a real chat — switch to it
             state.setSelectedChatId(realChat.id);
+            setChats(updatedChats);
+          } else {
+            // No real chat yet — keep the temp chat in the list
+            const withoutTemp = updatedChats.filter((c: any) => c.contactId !== tempChat.contactId);
+            setChats([...withoutTemp, tempChat]);
           }
+          return;
         }
       }
       setChats(updatedChats);
@@ -69,11 +87,9 @@ export const useSocketHandlers = () => {
     // Listen for new messages
     socketService.onNewMessage((message) => {
       if (message.receiverId === user.id || message.senderId === user.id) {
-        // Update messages for this chat
         const chatId = message.receiverId === user.id ? message.senderId : message.receiverId;
         addMessage(chatId, message);
         
-        // Play notification sound
         if (message.receiverId === user.id) {
           playNotificationSound('message');
         }
@@ -84,7 +100,6 @@ export const useSocketHandlers = () => {
     socketService.onNewGroupMessage((message) => {
       addGroupMessage(message.groupId, message);
       
-      // Play notification sound
       if (message.senderId !== user.id) {
         playNotificationSound('message');
       }
@@ -92,7 +107,6 @@ export const useSocketHandlers = () => {
 
     // Listen for typing indicators
     socketService.onUserTyping((data) => {
-      // Handle typing indicators in UI
       console.log(`${data.username} is ${data.isTyping ? 'typing' : 'not typing'}`);
     });
 
@@ -130,14 +144,27 @@ export const useSocketHandlers = () => {
     playNotificationSound
   ]);
 
+  const fetchInitialData = useCallback(() => {
+    if (!user || !socketService.isConnected()) return;
+    socketService.getOnlineUsers();
+    socketService.getChats();
+    socketService.getGroups();
+  }, [user]);
+
   useEffect(() => {
-    if (user && socketService.isConnected()) {
-      // Get initial data
-      socketService.getOnlineUsers();
-      socketService.getChats();
-      socketService.getGroups();
-      
+    if (!user || !socketService.isConnected()) return;
+
+    fetchInitialData();
+    setupSocketListeners();
+
+    // Re-fetch data and re-setup listeners on every reconnect
+    socketService.onConnect(() => {
+      fetchInitialData();
       setupSocketListeners();
-    }
-  }, [user, setupSocketListeners]);
+    });
+
+    return () => {
+      socketService.off('connect');
+    };
+  }, [user, fetchInitialData, setupSocketListeners]);
 };
