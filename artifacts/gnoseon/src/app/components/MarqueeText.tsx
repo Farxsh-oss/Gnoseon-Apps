@@ -1,142 +1,80 @@
-import { useRef, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+
+const DEFAULT_TEXT = '://Welcome </To> ://Gnoseon [idn] ://Selamat_datang </Di> ://Gnoseon>';
+
+function renderColoredText(text: string, keyPrefix: string) {
+  return text.split('').map((char, index) => {
+    let colorClass = 'text-gray-500';
+    let isBold = false;
+
+    if (char.match(/[a-zA-Z]/)) {
+      colorClass = 'text-green-600';
+      isBold = true;
+    } else if (['<', '>', '[', ']'].includes(char)) {
+      colorClass = 'text-purple-600';
+      isBold = true;
+    } else if ([':', '/', '_'].includes(char)) {
+      colorClass = 'text-gray-400';
+    }
+
+    return (
+      <span
+        key={`${keyPrefix}-${index}`}
+        className={`${colorClass} ${isBold ? 'font-bold' : 'font-normal'} text-sm`}
+      >
+        {char}
+      </span>
+    );
+  });
+}
 
 export function MarqueeText() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [text, setText] = useState('://Welcome </To> ://Gnoseon [idn] ://Selamat_datang </Di> ://Gnoseon>');
-  
+  const [text, setText] = useState(DEFAULT_TEXT);
+
   useEffect(() => {
-    // Load marquee text from localStorage
     const savedText = localStorage.getItem('gnoseon_marquee_text');
-    if (savedText) {
-      setText(savedText);
-    }
+    if (savedText) setText(savedText);
   }, []);
-  
+
   useEffect(() => {
-    // Inject CSS animation dynamically
     const style = document.createElement('style');
+    style.id = 'gnoseon-marquee-style';
     style.textContent = `
-      @keyframes marquee {
-        0% { transform: translateX(0%); }
-        100% { transform: translateX(-100%); }
+      @keyframes gnoseon-marquee {
+        0%   { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
       }
-      
-      .marquee-content {
-        animation: marquee linear infinite;
-        animation-duration: 20s;
+      .gnoseon-marquee-track {
         display: flex;
-        white-space: nowrap;
         width: max-content;
+        white-space: nowrap;
+        animation: gnoseon-marquee 18s linear infinite;
       }
-      
-      .marquee-content:hover {
+      .gnoseon-marquee-track:hover {
         animation-play-state: paused;
       }
-      
-      /* Hide marquee on mobile */
-      @media (max-width: 640px) {
-        .marquee-container {
-          display: none !important;
-        }
-      }
     `;
+
+    const existing = document.getElementById('gnoseon-marquee-style');
+    if (existing) existing.remove();
     document.head.appendChild(style);
-    
+
     return () => {
-      document.head.removeChild(style);
+      document.getElementById('gnoseon-marquee-style')?.remove();
     };
   }, []);
-  
+
   return (
-    <div 
-      ref={containerRef}
-      className="marquee-container relative overflow-hidden flex items-center h-8 flex-1"
-      style={{ 
-        fontFamily: 'JetBrains Mono, Space Mono, Courier New, monospace',
-        backgroundColor: 'transparent',
-        border: 'none',
-        boxShadow: 'none'
-      }}
+    <div
+      className="relative overflow-hidden flex items-center h-8 w-full"
+      style={{ fontFamily: 'JetBrains Mono, Space Mono, Courier New, monospace' }}
     >
-      <div className="marquee-content">
-        <span className="inline-block">
-          {text.split('').map((char, index) => {
-            let colorClass = 'text-gray-500';
-            let isBold = false;
-            
-            if (char.match(/[a-zA-Z]/)) {
-              colorClass = 'text-green-600';
-              isBold = true;
-            }
-            else if (char === '<' || (char.match(/[a-zA-Z]/) && text[index-1] === '<')) {
-              colorClass = 'text-purple-600';
-              isBold = true;
-            }
-            else if (char === '>' || (char.match(/[a-zA-Z]/) && text[index+1] === '>')) {
-              colorClass = 'text-purple-600';
-              isBold = true;
-            }
-            else if (char === '[' || (char === 'i' || char === 'd' || char === 'n')) {
-              colorClass = 'text-green-600';
-              isBold = true;
-            }
-            else if (char === ']') {
-              colorClass = 'text-green-600';
-              isBold = true;
-            }
-            else if ([':', '/', '_'].includes(char)) {
-              colorClass = 'text-gray-500';
-            }
-            
-            return (
-              <span 
-                key={index}
-                className={`${colorClass} ${isBold ? 'font-bold' : 'font-normal'} text-sm`}
-              >
-                {char}
-              </span>
-            );
-          })}
+      <div className="gnoseon-marquee-track">
+        <span className="inline-block pr-12">
+          {renderColoredText(text, 'a')}
         </span>
-        {/* Duplikat text untuk continuous scroll */}
-        <span className="inline-block ml-8">
-          {text.split('').map((char, index) => {
-            let colorClass = 'text-gray-500';
-            let isBold = false;
-            
-            if (char.match(/[a-zA-Z]/)) {
-              colorClass = 'text-green-600';
-              isBold = true;
-            }
-            else if (char === '<' || (char.match(/[a-zA-Z]/) && text[index-1] === '<')) {
-              colorClass = 'text-purple-600';
-              isBold = true;
-            }
-            else if (char === '>' || (char.match(/[a-zA-Z]/) && text[index+1] === '>')) {
-              colorClass = 'text-purple-600';
-              isBold = true;
-            }
-            else if (char === '[' || (char === 'i' || char === 'd' || char === 'n')) {
-              colorClass = 'text-green-600';
-              isBold = true;
-            }
-            else if (char === ']') {
-              colorClass = 'text-green-600';
-              isBold = true;
-            }
-            else if ([':', '/', '_'].includes(char)) {
-              colorClass = 'text-gray-500';
-            }
-            
-            return (
-              <span 
-                key={`dup-${index}`}
-                className={`${colorClass} ${isBold ? 'font-bold' : 'font-normal'} text-sm`}
-              >
-                {char}
-              </span>
-            );
-          })}
+        <span className="inline-block pr-12">
+          {renderColoredText(text, 'b')}
         </span>
       </div>
     </div>
