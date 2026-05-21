@@ -1,0 +1,56 @@
+services:
+  # Web service for the React frontend
+  - type: web
+    name: gnoseon-frontend
+    env: static
+    buildCommand: npm run build
+    staticPublishPath: ./dist
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=3600
+      - path: /static/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /index.html
+        name: Cache-Control
+        value: no-cache, no-store, must-revalidate
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: http://gnoseon-backend:3001
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_APP_NAME
+        value: Gnōseōn
+      - key: VITE_APP_VERSION
+        value: 1.0.0
+      - key: VITE_APP_DESCRIPTION
+        value: Secure Messaging Application
+
+  # Backend service for the Express server
+  - type: web
+    name: gnoseon-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm run start:server
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: DB_NAME
+        value: gnoseon-server.db
+      - key: DB_PATH
+        value: /opt/render/project/src/data
+      - key: FRONTEND_URL
+        value: https://gnoseon-frontend.onrender.com
+    disk:
+      name: gnoseon-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1

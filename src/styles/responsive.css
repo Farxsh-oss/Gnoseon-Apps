@@ -1,0 +1,266 @@
+/* Responsive Design Optimizations */
+
+/* Mobile First Approach */
+@media (max-width: 640px) {
+  /* Base mobile styles */
+  .neu-flat, .neu-raised, .neu-inset {
+    box-shadow: 2px 2px 4px var(--neu-dark), -2px -2px 4px var(--neu-light);
+  }
+  
+  .neu-raised:hover {
+    transform: translateY(-1px);
+    box-shadow: 3px 3px 6px var(--neu-dark), -3px -3px 6px var(--neu-light);
+  }
+  
+  /* Reduce padding on mobile */
+  .neu-flat, .neu-raised, .neu-inset {
+    padding: 0.5rem !important;
+  }
+  
+  /* Typography adjustments */
+  body {
+    font-size: 14px;
+  }
+  
+  /* Chat view mobile optimizations */
+  .message-container {
+    max-width: 85% !important;
+  }
+  
+  /* Touch targets minimum 44px */
+  button, .neu-raised, .neu-flat {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Mobile sidebar */
+  .mobile-sidebar {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: var(--bg-primary);
+  }
+  
+  /* Mobile chat input */
+  .mobile-chat-input {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+    padding: 1rem;
+  }
+  
+  /* Hide desktop elements on mobile */
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .tablet-hidden {
+    display: none !important;
+  }
+  
+  /* Adjust sidebar width for tablets */
+  .sidebar {
+    width: 300px !important;
+  }
+  
+  /* Medium screen typography */
+  body {
+    font-size: 15px;
+  }
+}
+
+/* Desktop Styles */
+@media (min-width: 1025px) {
+  .mobile-only {
+    display: none !important;
+  }
+  
+  /* Desktop hover effects */
+  .neu-raised {
+    transition: all 0.2s ease;
+  }
+  
+  .neu-raised:hover {
+    transform: translateY(-2px);
+  }
+  
+  /* Desktop typography */
+  body {
+    font-size: 16px;
+  }
+  
+  /* Larger touch targets for desktop */
+  .desktop-large-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+/* Landscape Mobile */
+@media (max-width: 640px) and (orientation: landscape) {
+  /* Reduce header height in landscape */
+  header {
+    height: 60px !important;
+  }
+  
+  /* Compact chat input for landscape */
+  .mobile-chat-input {
+    padding: 0.5rem;
+  }
+  
+  /* Smaller avatars in landscape */
+  .avatar-mobile-landscape {
+    width: 32px !important;
+    height: 32px !important;
+  }
+}
+
+/* High DPI/Retina Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Crisper shadows for high DPI */
+  .neu-flat, .neu-raised, .neu-inset {
+    box-shadow: 1px 1px 2px var(--neu-dark), -1px -1px 2px var(--neu-light);
+  }
+  
+  /* Sharper borders */
+  .neu-flat, .neu-raised, .neu-inset {
+    border-width: 0.5px;
+  }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 360px) {
+  /* Extra compact layout for very small screens */
+  .neu-flat, .neu-raised, .neu-inset {
+    padding: 0.375rem !important;
+  }
+  
+  /* Smaller text */
+  body {
+    font-size: 13px;
+  }
+  
+  /* Compact buttons */
+  button {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  /* Hide non-essential elements */
+  .small-mobile-hidden {
+    display: none !important;
+  }
+}
+
+/* Large Desktop Displays */
+@media (min-width: 1440px) {
+  /* Optimize for large screens */
+  .container-large {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  /* Larger content areas */
+  .content-area {
+    max-width: 1200px;
+  }
+  
+  /* Increased spacing */
+  .spacing-large {
+    padding: 2rem;
+  }
+}
+
+/* Ultra-wide Displays */
+@media (min-width: 1920px) {
+  /* Center content on ultra-wide screens */
+  .main-content {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  
+  /* Larger text for better readability */
+  body {
+    font-size: 18px;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .neu-raised:hover {
+    transform: none;
+  }
+  
+  /* Add active states for touch */
+  .neu-raised:active {
+    transform: scale(0.98);
+    box-shadow: inset 1px 1px 3px var(--neu-dark), inset -1px -1px 3px var(--neu-light);
+  }
+  
+  /* Larger touch targets */
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 12px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  /* Remove animations for users who prefer reduced motion */
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  /* Remove transform effects */
+  .neu-raised:hover {
+    transform: none !important;
+  }
+}
+
+/* Dark Mode Responsive Adjustments */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #404040;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-tertiary: #999999;
+    --border-color: #404040;
+    --neu-light: #2d2d2d;
+    --neu-dark: #0f0f0f;
+  }
+}
+
+/* Print Styles */
+@media print {
+  /* Hide non-essential elements */
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Optimize text for printing */
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+    color: #000;
+    background: #fff;
+  }
+  
+  /* Remove backgrounds and shadows */
+  .neu-flat, .neu-raised, .neu-inset {
+    box-shadow: none !important;
+    background: #fff !important;
+    border: 1px solid #000 !important;
+  }
+}
