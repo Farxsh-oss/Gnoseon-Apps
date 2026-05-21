@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+dist/
+build/
+
+# SQLite Database (Specific to Gnōseōn)
+data/*.db
+data/*.db-journal
+*.db
+*.db-shm
+*.db-wal
+
+# Environment Variables
+.env
+.env.local
+.env.production
+
+# Logs
+logs/
+*.log
+
+# OS metadata
+.DS_Store
+Thumbs.db
