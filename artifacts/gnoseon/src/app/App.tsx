@@ -51,6 +51,7 @@ function AppContent() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [showInfoPanel, setShowInfoPanel] = React.useState(false);
   const [showSidebar, setShowSidebar] = React.useState(true);
+  const [showGroupSidebar, setShowGroupSidebar] = React.useState(true);
   const [sharedFiles] = React.useState<SharedFile[]>([]);
   
   // Zustand stores
@@ -114,6 +115,7 @@ function AppContent() {
   const handleSelectGroupWrapper = (groupId: string) => {
     handleSelectGroup(groupId, () => {
       setShowSidebar(false);
+      setShowGroupSidebar(false);
     });
   };
 
@@ -308,16 +310,47 @@ function AppContent() {
     
     {activeTab === 'groups' && (
       <div className="flex-1 flex overflow-hidden relative p-4 gap-4">
+        {/* Mobile back button when viewing group chat */}
+        {!showGroupSidebar && selectedGroupId && (
+          <button
+            onClick={() => setShowGroupSidebar(true)}
+            className="fixed bottom-4 left-4 z-40 lg:hidden p-3 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 transition-colors"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+        )}
+
         {/* Group Sidebar */}
-        <div className="h-full neu-flat rounded-lg p-4 w-full sm:w-80 lg:w-80">
-          <GroupChat
-            groups={groups}
-            onSelectGroup={handleSelectGroupWrapper}
-            onManageGroup={handleManageGroup}
-            onCreateGroup={() => setShowCreateGroup(true)}
-          />
+        <div className={`${
+          showGroupSidebar ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0 transition-transform duration-300 fixed lg:relative h-full z-30 w-full sm:w-80 lg:w-80 top-0 left-0`}
+        style={{ height: 'calc(100vh - 120px)' }}>
+          <div className="lg:hidden absolute top-4 right-4 z-50">
+            <button
+              onClick={() => setShowGroupSidebar(false)}
+              className="p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+            >
+              <X className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
+          <div className="h-full neu-flat rounded-lg p-4">
+            <GroupChat
+              groups={groups}
+              onSelectGroup={handleSelectGroupWrapper}
+              onManageGroup={handleManageGroup}
+              onCreateGroup={() => setShowCreateGroup(true)}
+            />
+          </div>
         </div>
-        
+
+        {/* Overlay for mobile group sidebar */}
+        {showGroupSidebar && (
+          <div
+            className="fixed inset-0 bg-black/50 z-20 lg:hidden"
+            onClick={() => setShowGroupSidebar(false)}
+          />
+        )}
+
         {/* Group Chat View or Management */}
         <div className="flex-1 min-w-0 neu-flat rounded-lg p-4">
           {showGroupManagement && selectedGroupId && selectedGroup ? (
@@ -346,12 +379,18 @@ function AppContent() {
               onShowGroupInfo={() => setShowInfoPanel(true)}
             />
           ) : (
-            <div className="h-full flex items-center justify-center">
+            <div className="h-full flex items-center justify-center flex-col gap-3">
               <p className="text-gray-500">Select a group or create a new one</p>
+              <button
+                onClick={() => setShowGroupSidebar(true)}
+                className="lg:hidden px-4 py-2 neu-raised rounded-lg text-purple-600 text-sm font-semibold"
+              >
+                Open Group List
+              </button>
             </div>
           )}
         </div>
-        
+
         {/* Create Group Modal */}
         {showCreateGroup && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -359,7 +398,11 @@ function AppContent() {
               <CreateGroup
                 contacts={contacts}
                 onClose={() => setShowCreateGroup(false)}
-                onCreateGroup={handleCreateGroup}
+                onCreateGroup={(name, desc, members) => {
+                  handleCreateGroup(name, desc, members);
+                  setShowCreateGroup(false);
+                  setShowGroupSidebar(true);
+                }}
               />
             </div>
           </div>

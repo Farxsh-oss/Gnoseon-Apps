@@ -47,6 +47,17 @@ export const useSocketHandlers = () => {
 
     // Listen for chats updates
     socketService.onChatsUpdated((updatedChats) => {
+      const state = useChatStore.getState();
+      // If a temp chat is selected, remap to the real chat after server update
+      if (state.selectedChatId?.startsWith('temp-')) {
+        const tempChat = state.chats.find((c: any) => c.id === state.selectedChatId);
+        if (tempChat) {
+          const realChat = updatedChats.find((c: any) => c.contactId === tempChat.contactId);
+          if (realChat) {
+            state.setSelectedChatId(realChat.id);
+          }
+        }
+      }
       setChats(updatedChats);
     });
 
