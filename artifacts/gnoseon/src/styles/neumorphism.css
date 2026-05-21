@@ -1,0 +1,185 @@
+/* Neumorphism Styles */
+
+/* Flat surface - base state */
+.neu-flat {
+  background: #e6e9f0;
+  box-shadow: 
+    12px 12px 24px rgba(163, 177, 198, 0.5),
+    -12px -12px 24px rgba(255, 255, 255, 0.8);
+}
+
+/* Raised/Convex surface */
+.neu-raised {
+  background: #e6e9f0;
+  box-shadow: 
+    8px 8px 16px rgba(163, 177, 198, 0.6),
+    -8px -8px 16px rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+}
+
+.neu-raised:hover {
+  box-shadow: 
+    10px 10px 20px rgba(163, 177, 198, 0.7),
+    -10px -10px 20px rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+}
+
+.neu-raised:active,
+.neu-pressed {
+  box-shadow: 
+    inset 6px 6px 12px rgba(163, 177, 198, 0.6),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.8);
+  transform: translateY(1px);
+}
+
+/* Inset/Concave surface */
+.neu-inset {
+  background: #e6e9f0;
+  box-shadow: 
+    inset 8px 8px 16px rgba(163, 177, 198, 0.5),
+    inset -8px -8px 16px rgba(255, 255, 255, 0.7);
+}
+
+/* Green variant for buttons */
+.neu-raised-green {
+  background: linear-gradient(145deg, #e8f5e9, #c8e6c9);
+  box-shadow: 
+    8px 8px 16px rgba(163, 177, 198, 0.6),
+    -8px -8px 16px rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+}
+
+.neu-raised-green:hover {
+  box-shadow: 
+    10px 10px 20px rgba(163, 177, 198, 0.7),
+    -10px -10px 20px rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+}
+
+.neu-raised-green:active {
+  box-shadow: 
+    inset 6px 6px 12px rgba(163, 177, 198, 0.6),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.8);
+  transform: translateY(1px);
+}
+
+/* Purple variant */
+.neu-flat-purple {
+  background: linear-gradient(145deg, #f3e5f5, #e1bee7);
+  box-shadow: 
+    12px 12px 24px rgba(163, 177, 198, 0.5),
+    -12px -12px 24px rgba(255, 255, 255, 0.8);
+}
+
+.neu-raised-purple {
+  background: linear-gradient(145deg, #e1bee7, #f3e5f5);
+  box-shadow: 
+    8px 8px 16px rgba(163, 177, 198, 0.6),
+    -8px -8px 16px rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+}
+
+.neu-raised-purple:hover {
+  box-shadow: 
+    10px 10px 20px rgba(163, 177, 198, 0.7),
+    -10px -10px 20px rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+}
+
+.neu-raised-purple:active {
+  box-shadow: 
+    inset 6px 6px 12px rgba(163, 177, 198, 0.6),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.8);
+  transform: translateY(1px);
+}
+
+/* Green variant for messages */
+.neu-flat-green {
+  background: linear-gradient(145deg, #e8f5e9, #c8e6c9);
+  box-shadow: 
+    12px 12px 24px rgba(163, 177, 198, 0.5),
+    -12px -12px 24px rgba(255, 255, 255, 0.8);
+}
+
+/* Yellow variant for pinned */
+.neu-flat-yellow {
+  background: linear-gradient(145deg, #fff9c4, #fff59d);
+  box-shadow: 
+    12px 12px 24px rgba(163, 177, 198, 0.5),
+    -12px -12px 24px rgba(255, 255, 255, 0.8);
+}
+
+/* Red variant for errors */
+.neu-flat-red {
+  background: linear-gradient(145deg, #ffebee, #ffcdd2);
+  box-shadow: 
+    12px 12px 24px rgba(163, 177, 198, 0.5),
+    -12px -12px 24px rgba(255, 255, 255, 0.8);
+}
+
+/* Enhanced button styles */
+.neu-button {
+  background: #e6e9f0;
+  box-shadow: 
+    6px 6px 12px rgba(163, 177, 198, 0.6),
+    -6px -6px 12px rgba(255, 255, 255, 0.9);
+  transition: all 0.2s ease;
+  border: none;
+  outline: none;
+}
+
+.neu-button:hover {
+  box-shadow: 
+    8px 8px 16px rgba(163, 177, 198, 0.7),
+    -8px -8px 16px rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+}
+
+.neu-button:active {
+  box-shadow: 
+    inset 4px 4px 8px rgba(163, 177, 198, 0.6),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+  transform: translateY(1px);
+}
+
+/* Add monospace font to body */
+body {
+  font-family: 'JetBrains Mono', 'Space Mono', 'Courier New', monospace;
+}
+
+/* Red variant for errors and reporting */
+.neu-flat-red {
+  background: linear-gradient(145deg, #ffebee, #ffcdd2);
+  box-shadow: 
+    12px 12px 24px rgba(163, 177, 198, 0.5),
+    -12px -12px 24px rgba(255, 255, 255, 0.8);
+}
+
+.neu-raised-red {
+  background: linear-gradient(145deg, #ffcdd2, #ffebee);
+  box-shadow: 
+    8px 8px 16px rgba(163, 177, 198, 0.6),
+    -8px -8px 16px rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+}
+
+.neu-raised-red:hover {
+  box-shadow: 
+    10px 10px 20px rgba(163, 177, 198, 0.7),
+    -10px -10px 20px rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+}
+
+.neu-raised-red:active {
+  box-shadow: 
+    inset 6px 6px 12px rgba(163, 177, 198, 0.6),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.8);
+  transform: translateY(1px);
+}
+
+/* Enhanced focus styles */
+.neu-raised:focus,
+.neu-button:focus {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}

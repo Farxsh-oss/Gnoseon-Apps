@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Gnōseōn Chat"
+version = "1.0.0"
+id = "artifacts/gnoseon"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22351
+
+[services.development]
+run = "pnpm --filter @workspace/gnoseon run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/gnoseon", "run", "build" ]
+publicDir = "artifacts/gnoseon/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22351"
+BASE_PATH = "/"
