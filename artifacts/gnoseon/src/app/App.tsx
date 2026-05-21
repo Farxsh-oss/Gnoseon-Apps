@@ -22,6 +22,7 @@ import { useChatHandlers } from './hooks/useChatHandlers';
 import { Chat, Group } from './types';
 import { Menu, X } from 'lucide-react';
 import gnoseonRobot from '@/assets/Kepala-Robot-Gnoseon.png';
+import defaultAvatar from '@/assets/contacts.png';
 import { SharedFile } from './components/FileSharing';
 import { InstallPrompt } from './components/InstallPrompt';
 
@@ -86,7 +87,15 @@ function AppContent() {
     status: 'online' as const,
     username: '@gnoseon-bot',
     bio: 'AI Assistant untuk membantu Anda memahami fitur aplikasi Gnoseon'
-  } : (selectedChat ? contacts.find((c: any) => c.id === selectedChat.contactId) : null);
+  } : (selectedChat ? (
+    contacts.find((c: any) => c.id === selectedChat.contactId) || {
+      id: selectedChat.contactId!,
+      name: `User_${(selectedChat.contactId || '').slice(0, 8)}`,
+      avatar: defaultAvatar,
+      status: 'offline' as const,
+      username: `@${(selectedChat.contactId || '').slice(0, 8)}`
+    }
+  ) : null);
   
   const selectedGroup = groups.find((g: Group) => g.id === selectedGroupId);
   

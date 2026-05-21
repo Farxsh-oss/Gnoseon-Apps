@@ -22,6 +22,8 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 export const io = new Server(httpServer, {
   cors: { origin: "*", methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], credentials: true },
   path: "/api/socket.io",
+  pingTimeout: 60000,
+  pingInterval: 25000,
 });
 
 app.use(

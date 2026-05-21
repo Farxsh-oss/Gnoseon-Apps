@@ -40,6 +40,7 @@ export const useSocketHandlers = () => {
     socketService.off('user_status_changed');
     socketService.off('messages_loaded');
     socketService.off('group_messages_loaded');
+    socketService.off('group_messages_updated');
     socketService.off('reaction_updated');
 
     // Listen for online users
@@ -123,6 +124,11 @@ export const useSocketHandlers = () => {
 
     // Listen for group messages loaded
     socketService.onGroupMessagesLoaded((data) => {
+      setGroupMessages(data.groupId, data.messages);
+    });
+
+    // Listen for group messages updated (after a new message is sent)
+    socketService.onGroupMessagesUpdated((data) => {
       setGroupMessages(data.groupId, data.messages);
     });
 
