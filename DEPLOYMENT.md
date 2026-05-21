@@ -1,27 +1,25 @@
 # 🚀 Deployment Guide - Gnōseōn
 
-**Status**: ✅ Ready for Replit & Render Deployment
+**Status**: ✅ Optimized for Replit Deployment
 
 ## 🌀 Replit Deployment (Recommended for Dev/Fast Preview)
 
 1. **Import ke Replit**: Hubungkan akun GitHub Anda ke Replit dan import repositori `Gnoseon-Apps`.
 2. **Konfigurasi Environment**: Replit akan mendeteksi file `.replit`. Pastikan Secrets (Environment Variables) berikut diisi jika diperlukan:
-   - `NODE_ENV`: `production`
-   - `PORT`: `3001`
+   - `NODE_ENV`: `production` (Wajib)
+   - `PORT`: `3001` (Wajib)
+   - `FRONTEND_URL`: URL repl Anda (contoh: `https://gnoseon-apps.yourusername.repl.co`)
 3. **Persistence**: SQLite secara otomatis tersimpan di dalam project folder Replit. Data akan tetap ada (persistent) selama file `.db` tidak dihapus manual.
 4. **Run**: Klik tombol "Run" besar di bagian atas. Replit akan menjalankan `npm install`, `npm run build`, dan memulai server backend.
 
 ---
 
-## 📋 Quick Summary
-
-Aplikasi ini sudah dikonfigurasi untuk di-deploy ke **Render.com (Free Tier)** dengan:
-- ✅ Frontend static hosting
-- ✅ Backend Node.js service
-- ✅ SQLite database dengan persistent storage
-- ✅ Core Messaging functionality (P2P & Group)
-- ✅ Health checks & monitoring
-- ✅ CORS configured untuk Render
+## 📋 Messaging Core Status
+- ✅ End-to-End Encryption (E2EE) enabled
+- ✅ SQLite Persistence enabled
+- ✅ Socket.IO Real-time updates
+- ✅ File Sharing & Group Management
+- ✅ Bot AI: Disabled (Pure Messaging focus)
 
 ---
 
