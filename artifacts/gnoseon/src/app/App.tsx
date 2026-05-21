@@ -23,6 +23,7 @@ import { Chat, Group } from './types';
 import { Menu, X } from 'lucide-react';
 import gnoseonRobot from '@/assets/Kepala-Robot-Gnoseon.png';
 import { SharedFile } from './components/FileSharing';
+import { InstallPrompt } from './components/InstallPrompt';
 
 function AppContent() {
   const { user, logout } = useAuthStore();
@@ -211,6 +212,8 @@ function AppContent() {
         user={user}
         onLogout={logout}
       />
+
+      <InstallPrompt />
     
     {activeTab === 'home' && (
       <div className="flex-1 flex overflow-hidden relative p-4 gap-4">

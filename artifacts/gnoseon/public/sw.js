@@ -1,79 +1,61 @@
-/**
- * Service Worker for Gnōseōn application
- * Provides offline functionality and caching
- */
-
-const CACHE_NAME = 'gnoseon-v2';
-const STATIC_CACHE = 'gnoseon-static-v2';
-const API_CACHE = 'gnoseon-api-v2';
-
-// Assets to cache on install
+const CACHE_NAME = 'gnoseon-v3';
 const STATIC_ASSETS = [
+  '/',
   '/manifest.json',
-  '/favicon.ico',
+  '/icon-192.png',
+  '/icon-512.png',
 ];
 
-// Install event - cache static assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(STATIC_CACHE)
+    caches.open(CACHE_NAME)
       .then((cache) => cache.addAll(STATIC_ASSETS))
       .then(() => self.skipWaiting())
-      .catch((error) => console.error('SW install failed:', error))
+      .catch((err) => console.warn('[SW] Install cache failed:', err))
   );
 });
 
-// Activate event - clean up ALL old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys()
-      .then((cacheNames) => Promise.all(
-        cacheNames.map((cacheName) => {
-          // Delete ALL old caches to force fresh content
-          if (cacheName !== STATIC_CACHE && cacheName !== API_CACHE) {
-            return caches.delete(cacheName);
-          }
-        })
-      ))
-      .then(() => self.clients.claim())
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
   );
 });
 
-// Fetch event - pass through everything, no caching of HTML or JS
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Never intercept Vite dev server requests, HMR, or module requests
-  if (url.pathname.startsWith('/@') || 
-      url.pathname.startsWith('/node_modules') ||
-      url.pathname.startsWith('/src') ||
-      url.pathname === '/' ||
-      url.pathname === '/index.html' ||
-      url.pathname.endsWith('.tsx') ||
-      url.pathname.endsWith('.ts') ||
-      url.pathname.endsWith('.js') ||
-      url.pathname.endsWith('.mjs') ||
-      url.pathname.endsWith('.css') ||
-      url.protocol === 'ws:' ||
-      url.protocol === 'wss:') {
-    return; // Let the request pass through normally
-  }
+  // Skip non-GET, chrome-extension, and Vite dev requests
+  if (request.method !== 'GET') return;
+  if (url.protocol === 'chrome-extension:') return;
+  if (url.pathname.startsWith('/@') || url.pathname.startsWith('/src')) return;
+  if (url.protocol === 'ws:' || url.protocol === 'wss:') return;
 
-  // For API requests, network-first
+  // API requests: network-first, fallback offline response
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(
-      fetch(request).catch(() => {
-        return new Response(JSON.stringify({ error: 'Offline' }), {
+      fetch(request).catch(() =>
+        new Response(JSON.stringify({ error: 'Offline' }), {
           headers: { 'Content-Type': 'application/json' }
-        });
-      })
+        })
+      )
     );
     return;
   }
 
-  // For everything else, network-first with cache fallback
+  // Static assets: cache-first
   event.respondWith(
-    fetch(request).catch(() => caches.match(request))
+    caches.match(request).then(cached => {
+      if (cached) return cached;
+      return fetch(request).then(response => {
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(c => c.put(request, clone));
+        }
+        return response;
+      }).catch(() => caches.match('/'));
+    })
   );
 });
