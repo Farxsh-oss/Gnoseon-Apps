@@ -319,7 +319,12 @@ export function GroupChatView({
                   placeholder={`Message ${group.name}...`}
                   value={messageText}
                   onChange={(e) => setMessageText(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                  onTouchEnd={(e) => {
+                    if (e.target instanceof HTMLInputElement) {
+                      e.target.focus();
+                    }
+                  }}
                   className="flex-1 bg-transparent focus:outline-none text-sm placeholder-gray-400"
                 />
                 <span className="text-purple-600 animate-pulse">█</span>

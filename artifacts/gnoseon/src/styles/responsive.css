@@ -43,13 +43,17 @@
   
   /* Mobile chat input */
   .mobile-chat-input {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    position: relative;
     background: var(--bg-primary);
     border-top: 1px solid var(--border-color);
-    padding: 1rem;
+    padding: 0.75rem;
+    z-index: 10;
+  }
+
+  /* Ensure mobile chat input stays visible above virtual keyboard */
+  .mobile-chat-input input {
+    -webkit-appearance: none;
+    appearance: none;
   }
   
   /* Hide desktop elements on mobile */
