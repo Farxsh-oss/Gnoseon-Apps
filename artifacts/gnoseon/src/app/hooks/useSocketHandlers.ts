@@ -61,23 +61,28 @@ export const useSocketHandlers = () => {
     // Listen for chats updates
     socketService.onChatsUpdated((updatedChats) => {
       const state = useChatStore.getState();
+      // Add contactId to each chat (the other user's id)
+      const chatsWithContactId = updatedChats.map((chat: any) => ({
+        ...chat,
+        contactId: chat.userId1 === user.id ? chat.userId2 : chat.userId1
+      }));
       if (state.selectedChatId?.startsWith('temp-')) {
         const tempChat = state.chats.find((c: any) => c.id === state.selectedChatId);
         if (tempChat) {
-          const realChat = updatedChats.find((c: any) => c.contactId === tempChat.contactId);
+          const realChat = chatsWithContactId.find((c: any) => c.contactId === tempChat.contactId);
           if (realChat) {
             // Found a real chat — switch to it
             state.setSelectedChatId(realChat.id);
-            setChats(updatedChats);
+            setChats(chatsWithContactId);
           } else {
             // No real chat yet — keep the temp chat in the list
-            const withoutTemp = updatedChats.filter((c: any) => c.contactId !== tempChat.contactId);
+            const withoutTemp = chatsWithContactId.filter((c: any) => c.contactId !== tempChat.contactId);
             setChats([...withoutTemp, tempChat]);
           }
           return;
         }
       }
-      setChats(updatedChats);
+      setChats(chatsWithContactId);
     });
 
     // Listen for groups updates

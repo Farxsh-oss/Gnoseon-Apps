@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL = '';
+const SOCKET_URL = window.location.origin;
 
 class SocketService {
   private socket: Socket | null = null;
