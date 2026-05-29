@@ -21,7 +21,7 @@ export const useChatHandlers = () => {
 
   const handleSendMessage = useCallback(async (text: string, expiresIn?: number) => {
     if (!selectedChatId || !user) return;
-    
+
     // Check if this is Gnoseon Bot
     if (selectedChatId === 'gnoseon-bot') {
       const userMessage = {
@@ -31,10 +31,10 @@ export const useChatHandlers = () => {
         timestamp: new Date(),
         type: 'text' as const
       };
-      
+
       addBotMessage(userMessage);
       setIsBotTyping(true);
-      
+
       try {
         const botResponse = await lmStudioService.sendMessage('gnoseon-bot', text);
         const botMessage = {
@@ -60,16 +60,60 @@ export const useChatHandlers = () => {
       }
       return;
     }
-    
+
     const selectedChat = chats.find((c: Chat) => c.id === selectedChatId);
     if (!selectedChat) return;
-    
-    socketService.sendMessage(selectedChat.contactId!, text, expiresIn);
+
+    const chatId = selectedChat.contactId!;
+    const tempId = `temp-${Date.now()}`;
+
+    // Add optimistic pending message
+    const pendingMessage = {
+      id: tempId,
+      senderId: user.id,
+      text,
+      timestamp: new Date(),
+      type: 'text' as const,
+      status: 'pending' as const
+    };
+
+    const { addMessage, setMessageStatus } = useChatStore.getState();
+    addMessage(chatId, pendingMessage);
+
+    // Send via socket
+    socketService.sendMessage(chatId, text, expiresIn);
+
+    // Simulate timeout to show "sent" after 500ms if no server confirm
+    setTimeout(() => {
+      setMessageStatus(chatId, tempId, 'sent');
+    }, 500);
   }, [selectedChatId, user, addBotMessage, setIsBotTyping, chats, playNotificationSound]);
 
   const handleSendGroupMessage = useCallback(async (groupId: string, text: string, expiresIn?: number) => {
     if (!groupId || !user) return;
+
+    const tempId = `temp-${Date.now()}`;
+    const { addGroupMessage, setGroupMessageStatus } = useChatStore.getState();
+
+    // Add optimistic pending message
+    const pendingMessage = {
+      id: tempId,
+      senderId: user.id,
+      text,
+      timestamp: new Date(),
+      type: 'text' as const,
+      status: 'pending' as const
+    };
+
+    addGroupMessage(groupId, pendingMessage);
+
+    // Send via socket
     socketService.sendGroupMessage(groupId, text, expiresIn);
+
+    // Simulate timeout to show "sent" after 500ms if no server confirm
+    setTimeout(() => {
+      setGroupMessageStatus(groupId, tempId, 'sent');
+    }, 500);
   }, [user]);
 
   const handleSelectChat = useCallback((chatId: string, callback?: () => void) => {

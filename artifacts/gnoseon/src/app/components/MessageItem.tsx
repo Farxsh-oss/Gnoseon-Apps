@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flag, Trash2, Smile } from 'lucide-react';
+import { Flag, Trash2, Smile, Check, CheckCheck, Loader } from 'lucide-react';
 import { Message } from '../types';
 import socketService from '../../services/socketService';
 
@@ -103,6 +103,19 @@ export const MessageItem: React.FC<MessageItemProps> = ({
           <span className="text-[10px] text-gray-500">
             [{formatTime(message.timestamp)}]
           </span>
+          {isMe && message.status && (
+            <span className="text-[10px] flex items-center gap-0.5">
+              {message.status === 'pending' && (
+                <Loader className="w-3 h-3 text-gray-400 animate-spin" />
+              )}
+              {message.status === 'sent' && (
+                <Check className="w-3 h-3 text-gray-400" />
+              )}
+              {message.status === 'read' && (
+                <CheckCheck className="w-3 h-3 text-purple-500" />
+              )}
+            </span>
+          )}
           {message.expiresAt && (
             <span className="text-[10px] text-orange-500 flex items-center gap-1">
               🔥 {getTimeUntilExpiration(message.expiresAt)}

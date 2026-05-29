@@ -22,6 +22,8 @@ interface ChatState {
   addBotMessage: (message: Message) => void;
   setIsBotTyping: (isTyping: boolean) => void;
   setMessageReactions: (messageId: string, reactions: { [emoji: string]: any[] }) => void;
+  setMessageStatus: (chatId: string, messageId: string, status: 'pending' | 'sent' | 'read') => void;
+  setGroupMessageStatus: (groupId: string, messageId: string, status: 'pending' | 'sent' | 'read') => void;
   clearMessages: (chatId: string) => void;
   clearGroupMessages: (groupId: string) => void;
 }
@@ -78,7 +80,27 @@ export const useChatStore = create<ChatState>((set: any) => ({
     })),
   
   setIsBotTyping: (isTyping: boolean) => set({ isBotTyping: isTyping }),
-  
+
+  setMessageStatus: (chatId: string, messageId: string, status: 'pending' | 'sent' | 'read') =>
+    set((state: ChatState) => ({
+      messages: {
+        ...state.messages,
+        [chatId]: state.messages[chatId]?.map(msg =>
+          msg.id === messageId ? { ...msg, status } : msg
+        ) || []
+      }
+    })),
+
+  setGroupMessageStatus: (groupId: string, messageId: string, status: 'pending' | 'sent' | 'read') =>
+    set((state: ChatState) => ({
+      groupMessages: {
+        ...state.groupMessages,
+        [groupId]: state.groupMessages[groupId]?.map(msg =>
+          msg.id === messageId ? { ...msg, status } : msg
+        ) || []
+      }
+    })),
+
   setMessageReactions: (messageId: string, reactions: { [emoji: string]: any[] }) =>
     set((state: ChatState) => {
       // Update in private messages

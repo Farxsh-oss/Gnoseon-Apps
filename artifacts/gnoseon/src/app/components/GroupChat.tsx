@@ -16,8 +16,6 @@ export const GroupChat: React.FC<GroupChatProps> = ({
   onCreateGroup
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  
-  console.log('GroupChat received groups:', groups);
 
   return (
     <div className="h-full flex flex-col">

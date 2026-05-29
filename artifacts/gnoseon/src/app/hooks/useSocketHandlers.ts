@@ -96,10 +96,25 @@ export const useSocketHandlers = () => {
     socketService.onNewMessage((message) => {
       if (message.receiverId === user.id || message.senderId === user.id) {
         const chatId = message.receiverId === user.id ? message.senderId : message.receiverId;
-        addMessage(chatId, message);
-        
+        // If server sends a message with a new ID, remove temp pending message first
+        const state = useChatStore.getState();
+        const existingMessages = state.messages[chatId] || [];
+        const tempMsg = existingMessages.find((m: any) => m.senderId === user.id && m.text === message.text && m.status === 'pending');
+        if (tempMsg) {
+          // Remove temp and add real one
+          const filtered = existingMessages.filter((m: any) => m.id !== tempMsg.id);
+          state.setMessages(chatId, [...filtered, { ...message, status: 'sent' }]);
+        } else {
+          addMessage(chatId, { ...message, status: 'sent' });
+        }
+
         if (message.receiverId === user.id) {
           playNotificationSound('message');
+          // Mark as read if we're viewing this chat
+          const isActive = state.selectedChatId === chatId || state.selectedChatId === message.chatId;
+          if (isActive) {
+            socketService.markMessagesRead(message.senderId);
+          }
         }
       }
     });

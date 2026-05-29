@@ -18,6 +18,7 @@ export interface Message {
   expiresAt?: Date;
   isEncrypted?: boolean;
   isRead?: boolean;
+  status?: 'pending' | 'sent' | 'read';
   reactions?: { [emoji: string]: Array<{ userId: string; userName: string }> };
 }
 
