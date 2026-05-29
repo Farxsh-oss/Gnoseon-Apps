@@ -42,6 +42,8 @@ export const useSocketHandlers = () => {
     socketService.off('group_messages_loaded');
     socketService.off('group_messages_updated');
     socketService.off('reaction_updated');
+    socketService.off('group_created');
+    socketService.off('group_updated');
 
     // Listen for online users
     socketService.onOnlineUsers((users) => {
@@ -140,6 +142,29 @@ export const useSocketHandlers = () => {
     // Listen for reaction updates
     socketService.onReactionUpdated((data) => {
       setMessageReactions(data.messageId, data.reactions);
+    });
+
+    // Listen for group created (auto-select for creator)
+    socketService.onGroupCreated((group) => {
+      const state = useChatStore.getState();
+      if (group.createdBy === user.id) {
+        // Auto-join group and select it
+        socketService.joinGroup(group.id);
+        state.setSelectedGroupId(group.id);
+      }
+      // Refresh groups list
+      socketService.getGroups();
+    });
+
+    // Listen for group updated
+    socketService.onGroupUpdated((group) => {
+      const state = useChatStore.getState();
+      const updatedGroups = state.groups.map((g: any) => g.id === group.id ? group : g);
+      setGroups(updatedGroups);
+      // Refresh messages if this group is selected
+      if (state.selectedGroupId === group.id) {
+        socketService.getGroupMessages(group.id);
+      }
     });
   }, [
     user, 

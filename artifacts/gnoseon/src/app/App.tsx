@@ -136,8 +136,8 @@ function AppContent() {
     });
   };
 
-  const handleManageGroup = () => {
-    // Note: selectedGroupId should already be set by handleSelectGroup
+  const handleManageGroup = (groupId: string) => {
+    setSelectedGroupId(groupId);
     setShowGroupManagement(true);
   };
 
