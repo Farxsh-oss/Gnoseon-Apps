@@ -36,7 +36,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
 
   return (
     <div className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-md message-container ${isMe ? 'order-2' : 'order-1'} group`}>
+      <div className={`max-w-[85%] md:max-w-md message-container ${isMe ? 'order-2' : 'order-1'} group`}>
         {message.type === 'image' ? (
           <div className={`neu-flat p-4 rounded-xl ${isMe ? 'ml-auto' : 'mr-auto'}`}>
             {/* ASCII Frame */}
@@ -58,7 +58,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
             </div>
           </div>
         ) : (
-          <div className={`${isMe ? 'neu-flat-purple' : 'neu-flat-green'} p-3 rounded-xl relative`}>
+          <div className={`${isMe ? 'neu-flat-purple' : 'neu-flat-green'} p-2 md:p-3 rounded-xl relative`}>
             {/* Message pointer */}
             <div className={`absolute top-3 ${isMe ? '-right-1' : '-left-1'} text-xs ${
               isMe ? 'text-purple-400' : 'text-green-400'

@@ -433,7 +433,9 @@ function AppContent() {
       <SettingsView user={user} />
     )}
     
-    <StatusBar />
+    <div className="hidden md:block">
+      <StatusBar />
+    </div>
   </div>
   );
 }

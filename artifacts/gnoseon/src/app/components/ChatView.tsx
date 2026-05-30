@@ -129,18 +129,18 @@ export function ChatView({
       />
       
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 relative message-container">
+      <div className="flex-1 overflow-y-auto p-2 md:p-4 relative message-container">
         {/* Message Search Overlay */}
         {showMessageSearch && (
-          <div className="absolute inset-0 bg-[#e6e9f0] z-10 neu-flat rounded-xl m-4 p-4 mobile-only">
+          <div className="absolute inset-0 bg-[#e6e9f0] z-10 neu-flat rounded-xl m-2 md:m-4 p-2 md:p-4 mobile-only">
             <MessageSearch
               currentUserId={currentUserId || ''}
               onClose={() => setShowMessageSearch(false)}
             />
           </div>
         )}
-        
-        <div className="max-w-4xl mx-auto space-y-4">
+
+        <div className="max-w-4xl mx-auto space-y-2 md:space-y-4">
           {messages.filter(message => !expiredMessages.has(message.id)).map((message) => (
             <MessageItem 
               key={message.id}

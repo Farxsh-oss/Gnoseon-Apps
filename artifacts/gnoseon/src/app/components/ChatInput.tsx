@@ -32,7 +32,7 @@ export function ChatInput({
   };
 
   return (
-    <div className="p-4 neu-flat mobile-chat-input">
+    <div className="p-2 md:p-4 neu-flat mobile-chat-input">
       <div className="max-w-4xl mx-auto">
         {/* ASCII Top Border */}
         <div className="text-[8px] text-gray-400 mb-2">

@@ -18,8 +18,8 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
   onShowInfo
 }) => {
   return (
-    <div className="p-4 bg-white/50 backdrop-blur-md border-b border-gray-200/50">
-      <div className="flex items-center justify-between">
+    <div className="p-2 md:p-4 bg-white/50 backdrop-blur-md border-b border-gray-200/50">
+      <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-3">
           <div className="relative">
             <img 
